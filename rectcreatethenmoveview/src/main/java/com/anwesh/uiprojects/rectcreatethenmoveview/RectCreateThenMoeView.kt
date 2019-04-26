@@ -19,12 +19,12 @@ val parts : Int = 2
 val scGap : Float = 0.05f
 val scDiv : Double = 0.51
 val strokeFactor : Int = 90
-val sizeFactor : Float = 2.9f
 val foreColor : Int = Color.parseColor("#673AB7")
 val backColor : Int = Color.parseColor("#BDBDBD")
 val rWSizeFactor : Float = 8f
 val rHSizeFactor : Float = 5f
 val angleDeg : Float = 90f
+val delay : Long = 20
 
 fun Int.inverse() : Float = 1f / this
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
@@ -37,7 +37,10 @@ fun Float.mirrorValue(a : Int, b : Int) : Float  {
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * dir * scGap
 
 fun Canvas.drawRCBar(w : Float, h : Float, sc : Float, paint : Paint) {
-    drawRect(RectF(-w / 2, -h / 2, w / 2, -h / 2 + h / 2 * sc), paint)
+    arrayOf(Paint.Style.FILL, Paint.Style.STROKE).forEach {
+        paint.style = it
+        drawRect(RectF(-w / 2, -h / 2, w / 2, -h / 2 + h / 2 * sc), paint)
+    }
 }
 
 fun Canvas.drawRCTMNode(i : Int, scale : Float, paint : Paint) {
@@ -49,8 +52,10 @@ fun Canvas.drawRCTMNode(i : Int, scale : Float, paint : Paint) {
     val sc1 : Float = scale.divideScale(0, 2)
     val sc2 : Float = scale.divideScale(1, 2)
     val sf : Float = 1f - 2 * (i % 2).toFloat()
-    val x : Float = gap * sf * sc2.divideScale(1, parts)
+    val x : Float = (gap + hRect / 2) * sf * sc2.divideScale(1, parts)
     val deg : Float = angleDeg * sf * sc2.divideScale(0, parts)
+    paint.color = foreColor
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
     save()
     translate(w / 2 + x, h / 2)
     rotate(deg)
@@ -108,7 +113,7 @@ class RectCreateThenMoveView(ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(delay)
                     view.invalidate()
                 } catch(ex : Exception) {
 
