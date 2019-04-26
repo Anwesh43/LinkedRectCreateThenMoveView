@@ -194,4 +194,26 @@ class RectCreateThenMoveView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : RectCreateThenMoveView) {
+
+        private val animator : Animator = Animator(view)
+        private val rctm : RectCreateThenMove = RectCreateThenMove(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            rctm.draw(canvas, paint)
+            animator.animate {
+                rctm.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            rctm.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
