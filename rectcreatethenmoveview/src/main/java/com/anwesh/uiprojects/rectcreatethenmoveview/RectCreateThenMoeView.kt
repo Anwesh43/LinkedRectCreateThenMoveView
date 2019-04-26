@@ -217,4 +217,13 @@ class RectCreateThenMoveView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity: Activity) : RectCreateThenMoveView {
+            val view : RectCreateThenMoveView = RectCreateThenMoveView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
