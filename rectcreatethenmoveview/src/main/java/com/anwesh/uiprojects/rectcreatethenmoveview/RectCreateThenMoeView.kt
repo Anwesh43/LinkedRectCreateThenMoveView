@@ -25,6 +25,8 @@ val rWSizeFactor : Float = 8f
 val rHSizeFactor : Float = 5f
 val angleDeg : Float = 90f
 val delay : Long = 20
+val hOffset : Float = 0.5f
+val textSizeFactor : Float = 10f
 
 fun Int.inverse() : Float = 1f / this
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
@@ -56,8 +58,11 @@ fun Canvas.drawRCTMNode(i : Int, scale : Float, paint : Paint) {
     val deg : Float = angleDeg * sf * sc2.divideScale(0, parts)
     paint.color = foreColor
     paint.strokeWidth = Math.min(w, h) / strokeFactor
+    paint.style = Paint.Style.FILL
+    paint.textSize = Math.min(w, h) / textSizeFactor
     save()
     translate(w / 2 + x, h / 2)
+    drawText("${i + 1}", 0f, -hOffset * h, paint)
     rotate(deg)
     for (j in 0..(rects - 1)) {
         val sc : Float = sc1.divideScale(j, rects)
